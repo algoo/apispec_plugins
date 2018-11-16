@@ -1,0 +1,15 @@
+language: python
+dist: xenial
+python:
+  - "3.6"
+  - "3.7"
+
+sudo: false
+
+install:
+  - cd apispec_serpyco
+  - python setup.py develop
+  - pip install -e ".[test]"
+
+script:
+  - pytest tests
