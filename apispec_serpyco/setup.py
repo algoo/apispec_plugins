@@ -11,7 +11,7 @@ setup(
     keywords="apispec openapi serpyco api",
     url="https://github.com/algoo/apispec_plugins",
     packages=['apispec_serpyco'],
-    long_description='Please see https://github.com/algoo/apispec_plugins/serpyco',
+    long_description='https://github.com/algoo/apispec_plugins/tree/master/apispec_serpyco',
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3.6",
