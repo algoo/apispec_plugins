@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import dataclasses
+
 import serpyco
-
 from apispec.utils import OpenAPIVersion
-
 
 __location_map__ = {
     'query': 'query',
@@ -148,8 +147,7 @@ class OpenAPIConverter(object):
             name=name,
             required=isinstance(field.default, dataclasses._MISSING_TYPE),
             multiple=False,
-            # TODO BS 2018-10-15: useful ?
-            # multiple=isinstance(field, marshmallow.fields.List),
+            multiple=isinstance(field.type, typing.Sequence),
             location=location,
             default_in=default_in,
         )
