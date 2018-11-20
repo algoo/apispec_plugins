@@ -146,7 +146,6 @@ class OpenAPIConverter(object):
             field_json_schema,
             name=name,
             required=isinstance(field.default, dataclasses._MISSING_TYPE),
-            multiple=False,
             multiple=isinstance(field.type, typing.Sequence),
             location=location,
             default_in=default_in,
