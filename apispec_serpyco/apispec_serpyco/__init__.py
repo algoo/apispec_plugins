@@ -42,12 +42,13 @@ def replace_auto_refs(schema_name, data, openapi_version):
 class SerpycoPlugin(BasePlugin):
     """APISpec plugin handling python dataclass (with serpyco typing support)"""
 
-    def __init__(self):
+    def __init__(self, schema_name_resolver=None):
         super(SerpycoPlugin, self).__init__()
         self.spec = None
         # self.schema_name_resolver = schema_name_resolver
         self.openapi_version = None
         self.openapi = None
+        # FIXME BS 2018-11-22: use schema_name_resolver
 
     def init_spec(self, spec):
         """Initialize plugin with APISpec object
