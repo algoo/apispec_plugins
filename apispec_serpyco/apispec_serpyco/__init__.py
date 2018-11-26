@@ -48,7 +48,7 @@ class SerpycoPlugin(BasePlugin):
         # self.schema_name_resolver = schema_name_resolver
         self.openapi_version = None
         self.openapi = None
-        # FIXME BS 2018-11-22: use schema_name_resolver
+        self.schema_name_resolver = schema_name_resolver
 
     def init_spec(self, spec):
         """Initialize plugin with APISpec object
@@ -97,6 +97,7 @@ class SerpycoPlugin(BasePlugin):
 
         json_schema.pop("definitions", None)
 
+        json_schema.pop('$schema', None)
         return json_schema
 
     def parameter_helper(self, **kwargs):
