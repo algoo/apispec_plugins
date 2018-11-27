@@ -103,9 +103,14 @@ class SerpycoPlugin(BasePlugin):
             for name, definition in flat_definitions.items():
                 self.spec.components.schema(name, with_definition=definition)
 
+        # Clean json_schema (to be OpenAPI compatible)
         json_schema.pop("definitions", None)
-
         json_schema.pop("$schema", None)
+
+        # Remove description if it is an auto generated description
+        if schema.__doc__.strip() == json_schema.get('description'):
+            del json_schema['description']
+
         return json_schema
 
     def parameter_helper(self, **kwargs):
