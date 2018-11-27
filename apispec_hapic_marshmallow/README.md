@@ -2,7 +2,10 @@ apispec HapicMarshmallowPlugin
 ---------------------
 
 `HapicMarshmallowPlugin` a simple overloading of
-original apispec marshmallow plugin.
+original apispec marshmallow plugin :
+
+- manage `only` and `exclude` schema parameters and auto-generate associated schemas.
+- works with auto-referencing mechanism
 
 Install
 -------
