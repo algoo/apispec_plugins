@@ -1,6 +1,6 @@
 # coding: utf-8
-import marshmallow
 from apispec.ext.marshmallow import OpenAPIConverter
+import marshmallow
 
 from apispec_hapic_marshmallow import schema_class_resolver
 

@@ -7,15 +7,21 @@ import serpyco
 from apispec import BasePlugin
 
 from apispec_serpyco.openapi import OpenAPIConverter
+from apispec_serpyco.utils import schema_name_resolver
 
 
-def extract_definition_from_json_schema(definition):
+def extract_definitions_from_json_schema(definition):
     definitions = {}
 
-    for name, definition in definition.get("definitions", {}).items():
-        definitions[name] = definition
-        if definition.get("definitions"):
-            definitions.update(extract_definition_from_json_schema(definition))
+    for name, definition_ in definition.get("definitions", {}).items():
+
+        # TODO BS: Bypass a serpyco bug
+        if definition_ is None:
+            continue
+
+        definitions[name] = definition_
+        if definition_.get("definitions"):
+            definitions.update(extract_definitions_from_json_schema(definition_))
 
     return definitions
 
@@ -77,8 +83,10 @@ class SerpycoPlugin(BasePlugin):
         # Store registered refs, keyed by Schema class
         self.openapi.refs[schema] = name
 
-        serializer = serpyco.Serializer(schema)
-        json_schema = serializer.json_schema()
+        builder = serpyco.SchemaBuilder(
+            schema, get_definition_name=schema_name_resolver
+        )
+        json_schema = builder.json_schema()
 
         if self.openapi_version.major > 2:
             replace_refs_for_openapi3(json_schema["properties"])
@@ -91,13 +99,13 @@ class SerpycoPlugin(BasePlugin):
             # FIXME BS 2018-10-16: There is a problematic here: the serializer produce ref with an
             # automatic naming. This naming is used here but with apispec usage, name can be
             # different because specified in name parameter.
-            flat_definitions = extract_definition_from_json_schema(json_schema)
+            flat_definitions = extract_definitions_from_json_schema(json_schema)
             for name, definition in flat_definitions.items():
                 self.spec.components.schema(name, with_definition=definition)
 
         json_schema.pop("definitions", None)
 
-        json_schema.pop('$schema', None)
+        json_schema.pop("$schema", None)
         return json_schema
 
     def parameter_helper(self, **kwargs):
