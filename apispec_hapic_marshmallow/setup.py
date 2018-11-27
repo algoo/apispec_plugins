@@ -6,7 +6,7 @@ setup(
     version="0.1",
     author="Algoo",
     author_email="contact@algoo.fr",
-    description="Marshmallow plugin for Apispec",
+    description="Marshmallow apispec plugin for hapic",
     license="MIT",
     keywords="apispec openapi marshmallow api",
     url="https://github.com/algoo/apispec_plugins",
