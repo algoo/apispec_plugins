@@ -2,7 +2,7 @@
 from apispec.ext.marshmallow import OpenAPIConverter
 import marshmallow
 
-from apispec_hapic_marshmallow import schema_class_resolver
+from apispec_hapic_marshmallow.common import schema_class_resolver
 
 
 class HapicOpenAPIConverter(OpenAPIConverter):
