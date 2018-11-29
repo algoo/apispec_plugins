@@ -1,4 +1,5 @@
 # coding: utf-8
+import marshmallow
 
 
 def get_excluded_params(schema):

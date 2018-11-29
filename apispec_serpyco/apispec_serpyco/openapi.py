@@ -3,6 +3,7 @@ import typing
 
 from apispec.utils import OpenAPIVersion
 import serpyco
+from serpyco.schema import default_get_definition_name
 
 import dataclasses
 
@@ -24,10 +25,13 @@ class OpenAPIConverter(object):
         Should be in the form '2.x' or '3.x.x' to comply with the OpenAPI standard.
     """
 
-    def __init__(self, openapi_version):
+    def __init__(
+        self, openapi_version, schema_name_resolver=default_get_definition_name
+    ):
         self.openapi_version = OpenAPIVersion(openapi_version)
         # Schema references
         self.refs = {}
+        self._schema_name_resolver = schema_name_resolver
 
     def get_ref_path(self):
         """Return the path for references based on the openapi version"""
@@ -58,7 +62,11 @@ class OpenAPIConverter(object):
     def fields2jsonschema(self, fields, schema=None):
         """Convert dataclass field into json_schema"""
         field_names = [field.name for field in fields]
-        serializer = serpyco.Serializer(dataclass=schema, only=field_names)
+        serializer = serpyco.SchemaBuilder(
+            dataclass=schema,
+            only=field_names,
+            get_definition_name=self._schema_name_resolver,
+        )
 
         return serializer.json_schema()
 
@@ -133,7 +141,9 @@ class OpenAPIConverter(object):
         """
         assert schema
 
-        serializer = serpyco.Serializer(schema, only=[field.name])
+        serializer = serpyco.SchemaBuilder(
+            schema, only=[field.name], get_definition_name=self._schema_name_resolver
+        )
         field_json_schema = serializer.json_schema()["properties"][field.name]
 
         return self.property2parameter(

@@ -5,9 +5,9 @@ and `APISpec.path <apispec.APISpec.path>` (for responses). Note serpyco field ty
 """
 import serpyco
 from apispec import BasePlugin
+from serpyco.schema import default_get_definition_name
 
 from apispec_serpyco.openapi import OpenAPIConverter
-from apispec_serpyco.utils import schema_name_resolver
 
 
 def extract_definitions_from_json_schema(definition):
@@ -48,7 +48,7 @@ def replace_auto_refs(schema_name, data, openapi_version):
 class SerpycoPlugin(BasePlugin):
     """APISpec plugin handling python dataclass (with serpyco typing support)"""
 
-    def __init__(self, schema_name_resolver=None):
+    def __init__(self, schema_name_resolver=default_get_definition_name):
         super(SerpycoPlugin, self).__init__()
         self.spec = None
         # self.schema_name_resolver = schema_name_resolver
@@ -64,7 +64,10 @@ class SerpycoPlugin(BasePlugin):
         super(SerpycoPlugin, self).init_spec(spec)
         self.spec = spec
         self.openapi_version = spec.openapi_version
-        self.openapi = OpenAPIConverter(openapi_version=spec.openapi_version)
+        self.openapi = OpenAPIConverter(
+            openapi_version=spec.openapi_version,
+            schema_name_resolver=self.schema_name_resolver,
+        )
 
     def schema_helper(self, name, schema=None, **kwargs):
         """Definition helper that allows using a dataclass to provide
@@ -84,7 +87,7 @@ class SerpycoPlugin(BasePlugin):
         self.openapi.refs[schema] = name
 
         builder = serpyco.SchemaBuilder(
-            schema, get_definition_name=schema_name_resolver
+            schema, get_definition_name=self.schema_name_resolver
         )
         json_schema = builder.json_schema()
 

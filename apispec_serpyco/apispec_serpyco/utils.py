@@ -13,9 +13,10 @@ def schema_name_resolver(dataclass_, only=None, exclude=None) -> str:
     excluded_field_names = exclude
     dataclass_field_names = [f.name for f in dataclasses.fields(dataclass_)]
 
-    for dataclass_field_name in dataclass_field_names:
-        if dataclass_field_name not in only:
-            excluded_field_names.append(dataclass_field_name)
+    if only:
+        for dataclass_field_name in dataclass_field_names:
+            if dataclass_field_name not in only:
+                excluded_field_names.append(dataclass_field_name)
 
     if not excluded_field_names:
         return dataclass_name

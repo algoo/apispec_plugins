@@ -549,7 +549,7 @@ class TestCircularReference:
         spec.components.schema("Run", schema=RunSchema)
         definitions = get_definitions(spec)
         ref = definitions["Analysis"]["properties"]["sample"]["$ref"]
-        assert ref == ref_path(spec) + "SampleSchema_exclude_count_runs"
+        assert ref == ref_path(spec) + "SampleSchema"
 
 
 class TestSelfReference:
