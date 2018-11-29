@@ -18,6 +18,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["apispec>=1.0.0b1", "serpyco=>0.15.2"],
+    install_requires=["apispec>=1.0.0b1", "serpyco>=0.15.2"],
     extras_require={"test": ["pytest"]},
 )
