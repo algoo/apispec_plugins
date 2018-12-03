@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="apispec_marshmallow_advanced",
-    version="0.2",
+    version="0.3",
     author="Algoo",
     author_email="contact@algoo.fr",
     description="Marshmallow apispec plugin for hapic",
