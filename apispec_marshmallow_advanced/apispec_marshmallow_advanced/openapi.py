@@ -1,47 +1,44 @@
 # coding: utf-8
+from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import OpenAPIConverter
-import marshmallow
 
 from apispec_marshmallow_advanced.common import schema_class_resolver
 
 
 class HapicOpenAPIConverter(OpenAPIConverter):
-    def __init__(self, openapi_version, spec):
-        super().__init__(openapi_version)
-        self.spec = spec
+    def resolve_nested_schema(self, schema):
+        """Method to resolve a dictinary from schemas
 
-    def resolve_schema_dict(self, schema, dump=True, load=True, use_instances=False):
+        Tests to see if the schema is already in the spec and adds it if
+        necessary
+
+        Typically will return a dictionary with the reference to the schema's
+        path in the spec unless the `schema_name_resolver` returns `None` in
+        which case the returned dictoinary will contain the schema's paramaters
+        nested in place
+
+        :param schema: schema to add to the spec
         """
-        FIXME BS 2018-10-26: This is a complete copy-paste to permit usage of
-        schema_class_resolver. Make a PR to make this method more overload
-        friend.
-        """
-        if isinstance(schema, dict):
-            if schema.get("type") == "array" and "items" in schema:
-                schema["items"] = self.resolve_schema_dict(
-                    schema["items"], use_instances=use_instances
+        # CHANGED LINE HERE (use our schema_class_resolver)
+        schema_cls = schema_class_resolver(self.spec, schema)
+        name = self.schema_name_resolver(schema_cls)
+
+        if not name:
+            try:
+                return self.schema2jsonschema(schema)
+            except RuntimeError:
+                raise APISpecError(
+                    "Name resolver returned None for schema {schema} which is "
+                    "part of a chain of circular referencing schemas. Please"
+                    " ensure that the schema_name_resolver passed to"
+                    " MarshmallowPlugin returns a string for all circular"
+                    " referencing schemas.".format(schema=schema)
                 )
-            if schema.get("type") == "object" and "properties" in schema:
-                schema["properties"] = {
-                    k: self.resolve_schema_dict(
-                        v, dump=dump, load=load, use_instances=use_instances
-                    )
-                    for k, v in schema["properties"].items()
-                }
-            return schema
-        if isinstance(schema, marshmallow.Schema) and use_instances:
-            schema_cls = schema
-        else:
-            # THIS IS THE CHANGED LINE
-            # schema_cls = resolve_schema_cls(schema)
-            schema_cls = schema_class_resolver(self.spec, schema)
 
-        if schema_cls in self.refs:
-            ref_path = self.get_ref_path()
-            ref_schema = {"$ref": "#/{0}/{1}".format(ref_path, self.refs[schema_cls])}
-            if getattr(schema, "many", False):
-                return {"type": "array", "items": ref_schema}
-            return ref_schema
-        if not isinstance(schema, marshmallow.Schema):
-            schema = schema_cls
-        return self.schema2jsonschema(schema, dump=dump, load=load)
+        if schema_cls not in self.refs:
+            self.spec.components.schema(
+                name,
+                # CHANGED LINE HERE (use schema_cls instead schema)
+                schema=schema_cls,
+            )
+        return self.get_ref_dict(schema, schema_cls)
