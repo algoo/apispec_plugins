@@ -6,7 +6,7 @@ from apispec_marshmallow_advanced.common import schema_class_resolver
 from apispec_marshmallow_advanced.openapi import HapicOpenAPIConverter
 
 
-class HapicMarshmallowPlugin(MarshmallowPlugin):
+class MarshmallowAdvancedPlugin(MarshmallowPlugin):
     def init_spec(self, spec):
         super().init_spec(spec)
         self.openapi = HapicOpenAPIConverter(
