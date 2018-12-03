@@ -2,7 +2,7 @@
 from apispec.ext.marshmallow import OpenAPIConverter
 import marshmallow
 
-from apispec_hapic_marshmallow.common import schema_class_resolver
+from apispec_marshmallow_advanced.common import schema_class_resolver
 
 
 class HapicOpenAPIConverter(OpenAPIConverter):
@@ -17,14 +17,16 @@ class HapicOpenAPIConverter(OpenAPIConverter):
         friend.
         """
         if isinstance(schema, dict):
-            if schema.get('type') == 'array' and 'items' in schema:
-                schema['items'] = self.resolve_schema_dict(
-                    schema['items'], use_instances=use_instances,
+            if schema.get("type") == "array" and "items" in schema:
+                schema["items"] = self.resolve_schema_dict(
+                    schema["items"], use_instances=use_instances
                 )
-            if schema.get('type') == 'object' and 'properties' in schema:
-                schema['properties'] = {
-                    k: self.resolve_schema_dict(v, dump=dump, load=load, use_instances=use_instances)
-                    for k, v in schema['properties'].items()
+            if schema.get("type") == "object" and "properties" in schema:
+                schema["properties"] = {
+                    k: self.resolve_schema_dict(
+                        v, dump=dump, load=load, use_instances=use_instances
+                    )
+                    for k, v in schema["properties"].items()
                 }
             return schema
         if isinstance(schema, marshmallow.Schema) and use_instances:
@@ -36,12 +38,9 @@ class HapicOpenAPIConverter(OpenAPIConverter):
 
         if schema_cls in self.refs:
             ref_path = self.get_ref_path()
-            ref_schema = {'$ref': '#/{0}/{1}'.format(ref_path, self.refs[schema_cls])}
-            if getattr(schema, 'many', False):
-                return {
-                    'type': 'array',
-                    'items': ref_schema,
-                }
+            ref_schema = {"$ref": "#/{0}/{1}".format(ref_path, self.refs[schema_cls])}
+            if getattr(schema, "many", False):
+                return {"type": "array", "items": ref_schema}
             return ref_schema
         if not isinstance(schema, marshmallow.Schema):
             schema = schema_cls

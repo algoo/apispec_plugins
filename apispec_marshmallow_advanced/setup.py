@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(
-    name="apispec_hapic_marshmallow",
+    name="apispec_marshmallow_advanced",
     version="0.2",
     author="Algoo",
     author_email="contact@algoo.fr",
@@ -10,8 +10,8 @@ setup(
     license="MIT",
     keywords="apispec openapi marshmallow api",
     url="https://github.com/algoo/apispec_plugins",
-    packages=['apispec_hapic_marshmallow'],
-    long_description='https://github.com/algoo/apispec_plugins/tree/master/apispec_hapic_marshmallow',
+    packages=["apispec_marshmallow_advanced"],
+    long_description="https://github.com/algoo/apispec_plugins/tree/master/apispec_marshmallow_advanced",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3.4",
@@ -20,11 +20,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=[
-        "apispec>=1.0.0b1",
-        "marshmallow",
-    ],
-    extras_require={
-        'test':  ["pytest"],
-    }
+    install_requires=["apispec>=1.0.0b1", "marshmallow"],
+    extras_require={"test": ["pytest"]},
 )

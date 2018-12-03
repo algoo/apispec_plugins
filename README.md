@@ -4,5 +4,5 @@
 
 Apispec plugins repository of Algoo
 
-* [Hapic marshmallow](apispec_hapic_marshmallow/README.md)
+* [Marshmallow advanced](apispec_marshmallow_advanced/README.md)
 * [serpyco](apispec_serpyco/README.md)

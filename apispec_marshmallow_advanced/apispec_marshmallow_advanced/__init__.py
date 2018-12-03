@@ -2,14 +2,16 @@
 from marshmallow import fields
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-from apispec_hapic_marshmallow.common import schema_class_resolver
-from apispec_hapic_marshmallow.openapi import HapicOpenAPIConverter
+from apispec_marshmallow_advanced.common import schema_class_resolver
+from apispec_marshmallow_advanced.openapi import HapicOpenAPIConverter
 
 
 class HapicMarshmallowPlugin(MarshmallowPlugin):
     def init_spec(self, spec):
         super().init_spec(spec)
-        self.openapi = HapicOpenAPIConverter(openapi_version=spec.openapi_version, spec=self.spec)
+        self.openapi = HapicOpenAPIConverter(
+            openapi_version=spec.openapi_version, spec=self.spec
+        )
 
     def inspect_schema_for_auto_referencing(self, original_schema_instance):
         """Override of apispec.ext.marshmallow.MarshmallowPlugin to be able to
@@ -30,26 +32,20 @@ class HapicMarshmallowPlugin(MarshmallowPlugin):
             if isinstance(field, fields.Nested):
                 # THIS IS THE CHANGED LINE
                 # nested_schema_class = self.spec.schema_class_resolver(
-                nested_schema_class = schema_class_resolver(
-                    self.spec,
-                    field.schema,
-                )
+                nested_schema_class = schema_class_resolver(self.spec, field.schema)
 
-            elif isinstance(field, fields.List) \
-                    and isinstance(field.container, fields.Nested):
+            elif isinstance(field, fields.List) and isinstance(
+                field.container, fields.Nested
+            ):
                 # THIS IS THE CHANGED LINE
                 # nested_schema_class = self.spec.schema_class_resolver(
                 nested_schema_class = schema_class_resolver(
-                    self.spec,
-                    field.container.schema,
+                    self.spec, field.container.schema
                 )
 
             if nested_schema_class and nested_schema_class not in self.openapi.refs:
-                definition_name = self.schema_name_resolver(
-                    nested_schema_class,
-                )
+                definition_name = self.schema_name_resolver(nested_schema_class)
                 if definition_name:
                     self.spec.components.schema(
-                        definition_name,
-                        schema=nested_schema_class,
+                        definition_name, schema=nested_schema_class
                     )

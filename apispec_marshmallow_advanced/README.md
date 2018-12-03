@@ -10,7 +10,7 @@ original apispec marshmallow plugin :
 Install
 -------
 
-    pip install apispec_hapic_marshmallow
+    pip install apispec_marshmallow_advanced
 
 Tests
 -----

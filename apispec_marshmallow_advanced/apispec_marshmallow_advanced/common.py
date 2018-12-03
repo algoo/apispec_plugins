@@ -15,10 +15,10 @@ def get_excluded_params(schema):
 
     exclude = set()
     only = set()
-    if getattr(schema, 'exclude', ()):
-        exclude = set(getattr(schema, 'exclude', ()))
-    if getattr(schema, 'only', ()):
-        only = set(getattr(schema, 'only', ()))
+    if getattr(schema, "exclude", ()):
+        exclude = set(getattr(schema, "exclude", ()))
+    if getattr(schema, "only", ()):
+        only = set(getattr(schema, "only", ()))
     if only:
         for field in schema._declared_fields:
             if field not in only:
@@ -34,28 +34,24 @@ def generate_id(schema, exclude=()):
     :param exclude: excluded fields
     :return: str id related to schema and exclude params
     """
-    schema_id = ''
+    schema_id = ""
     if isinstance(schema, type):
         schema_id += schema.__name__
     else:
         schema_id += type(schema).__name__
 
     # fields
-    fields = [field for field in schema._declared_fields.keys()
-              if field not in exclude]
+    fields = [field for field in schema._declared_fields.keys() if field not in exclude]
     fields = sorted(fields)
-    schema_id += '('
+    schema_id += "("
     for field in fields:
-        schema_id += '_' + str(field)
-    schema_id += ')'
+        schema_id += "_" + str(field)
+    schema_id += ")"
 
     return schema_id
 
 
-def schema_class_resolver(
-    marshmallow_plugin,
-    schema,
-):
+def schema_class_resolver(marshmallow_plugin, schema):
     """
     Return best candidate class for a schema instance or cls.
     :param spec: Apispec instance
@@ -78,7 +74,7 @@ def schema_class_resolver(
         return cls_schema
 
     # FIXME BS 2018-11-22: Must be in real code
-    if not hasattr(marshmallow_plugin, 'auto_generated_schemas'):
+    if not hasattr(marshmallow_plugin, "auto_generated_schemas"):
         marshmallow_plugin.auto_generated_schemas = {}
 
     # already generated similar schema ?
@@ -91,10 +87,7 @@ def schema_class_resolver(
 
     NewSchema.opts.exclude = exclude
     NewSchema.__name__ = cls_schema.__name__
-    NewSchema._schema_name = '{}_{}'.format(
-        cls_schema.__name__,
-        id(NewSchema),
-    )
+    NewSchema._schema_name = "{}_{}".format(cls_schema.__name__, id(NewSchema))
     marshmallow_plugin.auto_generated_schemas[schema_id] = NewSchema
     return NewSchema
 
@@ -108,7 +101,7 @@ def generate_schema_name(schema: marshmallow.Schema):
     if not isinstance(schema, type):
         schema = type(schema)
 
-    if getattr(schema, '_schema_name', None):
+    if getattr(schema, "_schema_name", None):
         if schema.opts.exclude:
             schema_name = "{}_without".format(schema.__name__)
             for elem in sorted(schema.opts.exclude):
