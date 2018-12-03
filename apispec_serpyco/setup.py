@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="apispec_serpyco",
-    version="0.5",
+    version="0.6",
     author="Algoo",
     author_email="contact@algoo.fr",
     description="Serpyco plugin for Apispec",
@@ -18,6 +18,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["apispec>=1.0.0b1", "serpyco>=0.15.2"],
+    install_requires=["apispec>=1.0.0b1", "serpyco>=0.16.1"],
     extras_require={"test": ["pytest"]},
 )

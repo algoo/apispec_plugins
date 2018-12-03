@@ -1,8 +1,14 @@
 # coding: utf-8
 import dataclasses
+import typing
 
 
-def schema_name_resolver(dataclass_, only=None, exclude=None) -> str:
+def schema_name_resolver(
+    dataclass_: type,
+    arguments: tuple,
+    only: typing.Optional[typing.List[str]]=None,
+    exclude: typing.Optional[typing.List[str]]=None,
+) -> str:
     # TODO BS 2018-11-27: Prevent Serpyco bug (who can call here with scalar types)
     if not dataclasses.is_dataclass(dataclass_):
         return dataclass_.__name__
