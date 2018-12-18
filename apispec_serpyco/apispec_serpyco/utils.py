@@ -9,11 +9,11 @@ def schema_name_resolver(
     only: typing.Optional[typing.List[str]]=None,
     exclude: typing.Optional[typing.List[str]]=None,
 ) -> str:
-    # TODO BS 2018-11-27: Prevent Serpyco bug (who can call here with scalar types)
-    if not dataclasses.is_dataclass(dataclass_):
-        return dataclass_.__name__
-
-    dataclass_name = dataclass_.__name__
+    try:
+        dataclass_name = dataclass_.__name__
+    except AttributeError:
+        dataclass_name = dataclass_.__origin__.__name__
+        dataclass_ = dataclass_.__origin__
     only = only or []
     exclude = exclude or []
     excluded_field_names = exclude
