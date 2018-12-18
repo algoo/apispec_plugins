@@ -89,7 +89,7 @@ class SerpycoPlugin(BasePlugin):
         builder = serpyco.SchemaBuilder(
             schema,
             get_definition_name=self.schema_name_resolver,
-            **kwargs.get('serpyco_builder_args', {}),
+            **kwargs.get("serpyco_builder_args", {}),
         )
         json_schema = builder.json_schema()
 
