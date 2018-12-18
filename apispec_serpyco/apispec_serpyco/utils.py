@@ -5,9 +5,9 @@ import typing
 
 def schema_name_resolver(
     dataclass_: type,
-    arguments: typing.Optional[tuple]=None,
-    only: typing.Optional[typing.List[str]]=None,
-    exclude: typing.Optional[typing.List[str]]=None,
+    arguments: typing.Optional[tuple] = None,
+    only: typing.Optional[typing.List[str]] = None,
+    exclude: typing.Optional[typing.List[str]] = None,
 ) -> str:
     try:
         dataclass_name = dataclass_.__name__
