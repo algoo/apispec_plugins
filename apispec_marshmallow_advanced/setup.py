@@ -22,4 +22,5 @@ setup(
     ],
     install_requires=["apispec>=1.0.0b1", "marshmallow"],
     extras_require={"test": ["pytest"]},
+    data_files = [("", ["LICENSE"])],
 )
