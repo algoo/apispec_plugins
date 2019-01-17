@@ -20,4 +20,5 @@ setup(
     ],
     install_requires=["apispec>=1.0.0b1", "serpyco>=0.16.7"],
     extras_require={"test": ["pytest"]},
+    data_files = [("", ["LICENSE"])],
 )
