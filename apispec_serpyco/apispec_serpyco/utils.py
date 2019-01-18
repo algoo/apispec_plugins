@@ -2,7 +2,7 @@
 import dataclasses
 
 
-def schema_name_resolver(dataclass_, only=None, exclude=None) -> str:
+def schema_name_resolver(dataclass_, arguments, only=None, exclude=None) -> str:
     # TODO BS 2018-11-27: Prevent Serpyco bug (who can call here with scalar types)
     if not dataclasses.is_dataclass(dataclass_):
         return dataclass_.__name__
