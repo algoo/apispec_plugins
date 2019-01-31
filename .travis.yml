@@ -1,15 +1,42 @@
 language: python
 dist: xenial
-python:
-  - "3.6"
-  - "3.7"
 
 sudo: false
 
-install:
-  - cd apispec_serpyco
-  - python setup.py develop
-  - pip install -e ".[test]"
+jobs:
+  include:
+    - stage: Tests
+      name: apispec_serpyco (Python3.6)
+      python: "3.6"
+      install:
+        - cd $TRAVIS_BUILD_DIR/apispec_serpyco
+        - python setup.py develop
+        - pip install -e ".[test]"
+      script: pytest $TRAVIS_BUILD_DIR/apispec_serpyco/tests
 
-script:
-  - pytest tests
+    - stage: Tests
+      python: "3.7"
+      name: apispec_serpyco (Python3.7)
+      install:
+        - cd $TRAVIS_BUILD_DIR/apispec_serpyco
+        - python setup.py develop
+        - pip install -e ".[test]"
+      script: pytest $TRAVIS_BUILD_DIR/apispec_serpyco/tests
+
+    - stage: Tests
+      python: "3.6"
+      name: apispec_marshmallow_advanced (Python3.6)
+      install:
+        - cd $TRAVIS_BUILD_DIR/apispec_marshmallow_advanced
+        - python setup.py develop
+        - pip install -e ".[test]"
+      script: pytest $TRAVIS_BUILD_DIR/apispec_marshmallow_advanced/tests
+
+    - stage: Tests
+      python: "3.7"
+      name: apispec_marshmallow_advanced (Python3.7)
+      install:
+        - cd $TRAVIS_BUILD_DIR/apispec_marshmallow_advanced
+        - python setup.py develop
+        - pip install -e ".[test]"
+      script: pytest $TRAVIS_BUILD_DIR/apispec_marshmallow_advanced/tests

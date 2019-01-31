@@ -101,12 +101,14 @@ class SerpycoPlugin(BasePlugin):
 
         # If definitions in json_schema, add them
         if json_schema.get("definitions"):
-            # FIXME BS 2018-10-16: There is a problematic here: the serializer produce ref with an
-            # automatic naming. This naming is used here but with apispec usage, name can be
-            # different because specified in name parameter.
             flat_definitions = extract_definitions_from_json_schema(json_schema)
             for name, definition in flat_definitions.items():
-                self.spec.components.schema(name, with_definition=definition)
+
+                # Test if schema not already in schema lists
+                # FIXME BS 2019-01-31: We must take a look into _schemas attribute to prevent
+                # apispec.exceptions.DuplicateComponentNameError raise. See #14.
+                if name not in self.spec.components._schemas:
+                    self.spec.components.schema(name, with_definition=definition)
 
         # Clean json_schema (to be OpenAPI compatible)
         json_schema.pop("definitions", None)
