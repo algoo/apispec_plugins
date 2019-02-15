@@ -98,7 +98,7 @@ def extract_type_for_type_or_null_property(property_):
     """
     if "anyOf" in property_ and 2 == len(property_["anyOf"]):
         for optional_property in property_["anyOf"]:
-            if optional_property["type"] != "null":
+            if optional_property.get("type") != "null":
                 return optional_property
 
     raise TypeError("Can't extract type because this is not a type_or_null_property")
