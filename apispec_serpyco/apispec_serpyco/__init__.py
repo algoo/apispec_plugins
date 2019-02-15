@@ -137,7 +137,7 @@ def manage_required_properties(schema):
             # In OpenAPI, required properties are added in "required" key (see bellow)
             schema["properties"][property_name] = real_property
         else:
-            schema["properties"].setdefault("required", []).append(property_name)
+            schema.setdefault("required", []).append(property_name)
 
 
 def replace_auto_refs(schema_name, data, openapi_version):
