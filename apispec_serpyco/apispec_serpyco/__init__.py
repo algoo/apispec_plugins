@@ -34,6 +34,112 @@ def replace_refs_for_openapi3(data):
             data[key] = value.replace("#/definitions", "#/components/schemas")
 
 
+def is_type_or_null_property(property_):
+    """
+    Serpyco use "anyOf" (null, or defined type) key to define optional properties.
+    Example:
+        ``` json
+            [...]
+            "properties":{
+                "id":{
+                    "type":"integer"
+                },
+                "name":{
+                    "anyOf":[
+                        {
+                            "type":"string"
+                        },
+                        {
+                            "type":"null"
+                        }
+                    ]
+            [...]
+        ```
+
+    This function return True if given property it is.
+
+    :param property_: property to inspect
+    :return: True if given property is optional property
+    """
+    # These expression of property is an not required property
+    if "anyOf" in property_ and 2 == len(property_["anyOf"]):
+        for optional_property in property_["anyOf"]:
+            if optional_property["type"] == "null":
+                return True
+    return False
+
+
+def extract_type_for_type_or_null_property(property_):
+    """
+    Serpyco use "anyOf" (null, or defined type) key to define optional properties.
+    Example:
+        ``` json
+            [...]
+            "properties":{
+                "id":{
+                    "type":"integer"
+                },
+                "name":{
+                    "anyOf":[
+                        {
+                            "type":"string"
+                        },
+                        {
+                            "type":"null"
+                        }
+                    ]
+            [...]
+        ```
+
+    This function return real property definition.
+
+    :param property_:property where extract
+    :return: real property definition of given property
+    """
+    if "anyOf" in property_ and 2 == len(property_["anyOf"]):
+        for optional_property in property_["anyOf"]:
+            if optional_property["type"] != "null":
+                return optional_property
+
+    raise TypeError("Can't extract type because this is not a type_or_null_property")
+
+
+def manage_required_properties(schema):
+    """
+    Serpyco use "anyOf" (null, or defined type) key to define optional properties.
+    Example:
+        ``` json
+            [...]
+            "properties":{
+                "id":{
+                    "type":"integer"
+                },
+                "name":{
+                    "anyOf":[
+                        {
+                            "type":"string"
+                        },
+                        {
+                            "type":"null"
+                        }
+                    ]
+            [...]
+        ```
+
+    This function replace properties definition by real definition (by removing "anyOf") and
+    fill "required" property if any required property.
+    :param schema: schema dict to update
+    :return: Nothing. Schema is updated by reference.
+    """
+    for property_name, property_ in dict(schema.get("properties", {}).items()).items():
+        if is_type_or_null_property(property_):
+            real_property = extract_type_for_type_or_null_property(property_)
+            # In OpenAPI, required properties are added in "required" key (see bellow)
+            schema["properties"][property_name] = real_property
+        else:
+            schema["properties"].setdefault("required", []).append(property_name)
+
+
 def replace_auto_refs(schema_name, data, openapi_version):
     for key, value in data.items():
         if isinstance(value, dict):
@@ -95,6 +201,9 @@ class SerpycoPlugin(BasePlugin):
 
         if self.openapi_version.major > 2:
             replace_refs_for_openapi3(json_schema["properties"])
+
+        # To be OpenAPI compliant, we must manage ourself required properties
+        manage_required_properties(json_schema)
 
         # Replace auto reference to absolute reference
         replace_auto_refs(name, json_schema["properties"], self.openapi_version)

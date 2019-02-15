@@ -577,3 +577,19 @@ class TestSchemaWithDefaultValues:
         assert props["number_auto_default"]["default"] == 12
         assert props["string_callable_default"]["default"] == "Callable value"
         assert props["numbers"]["default"] == []
+
+
+class TestSchemaWithOptional:
+    def test_schema_with_optional_string(self, spec):
+        @dataclasses.dataclass
+        class MySchema:
+            id: int
+            name: typing.Optional[str]
+
+        spec.components.schema("MySchema", schema=MySchema)
+        definitions = get_definitions(spec)
+        props = definitions["MySchema"]["properties"]
+
+        assert "required" in definitions["MySchema"]
+        assert ['id'] == definitions["MySchema"]["required"]
+        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}, 'required': ['id']} == props
