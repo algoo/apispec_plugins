@@ -64,7 +64,7 @@ def is_type_or_null_property(property_):
     # These expression of property is an not required property
     if "anyOf" in property_ and 2 == len(property_["anyOf"]):
         for optional_property in property_["anyOf"]:
-            if optional_property["type"] == "null":
+            if optional_property.get("type") == "null":
                 return True
     return False
 
