@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="apispec_serpyco",
-    version="0.11",
+    version="0.12",
     author="Algoo",
     author_email="contact@algoo.fr",
     description="Serpyco plugin for Apispec",
