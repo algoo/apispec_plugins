@@ -138,6 +138,7 @@ def manage_required_properties(schema):
             schema["properties"][property_name] = real_property
         else:
             schema.setdefault("required", []).append(property_name)
+            schema["required"] = list(set(schema["required"]))
 
 
 def replace_auto_refs(schema_name, data, openapi_version):

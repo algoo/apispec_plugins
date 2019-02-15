@@ -592,4 +592,4 @@ class TestSchemaWithOptional:
 
         assert "required" in definitions["MySchema"]
         assert ['id'] == definitions["MySchema"]["required"]
-        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}, 'required': ['id']} == props
+        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}} == props
