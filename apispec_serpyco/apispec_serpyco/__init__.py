@@ -176,7 +176,7 @@ class SerpycoPlugin(BasePlugin):
             schema_name_resolver=self.schema_name_resolver,
         )
 
-    def schema_helper(self, name, schema=None, **kwargs):
+    def schema_helper(self, name, component=None, schema=None, **kwargs):
         """Definition helper that allows using a dataclass to provide
         OpenAPI metadata.
 
@@ -226,7 +226,7 @@ class SerpycoPlugin(BasePlugin):
 
         return json_schema
 
-    def parameter_helper(self, **kwargs):
+    def parameter_helper(self, component=None, **kwargs):
         """Parameter component helper that allows using a dataclass
         in parameter definition.
 
@@ -236,7 +236,7 @@ class SerpycoPlugin(BasePlugin):
         self.resolve_schema(kwargs)
         return kwargs
 
-    def response_helper(self, **kwargs):
+    def response_helper(self, component=None, **kwargs):
         """Response component helper that allows using a dataclass in response definition.
 
         :param type|Schema schema: A marshmallow Schema class or instance.
