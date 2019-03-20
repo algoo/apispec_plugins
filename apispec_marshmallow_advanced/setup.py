@@ -20,7 +20,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["apispec>=1.0.0rc1", "marshmallow"],
+    install_requires=["apispec>=1.1.0", "marshmallow"],
     extras_require={"test": ["pytest"]},
     data_files = [("", ["LICENSE"])],
 )
