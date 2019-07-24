@@ -593,3 +593,22 @@ class TestSchemaWithOptional:
         assert "required" in definitions["MySchema"]
         assert ['id'] == definitions["MySchema"]["required"]
         assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}} == props
+
+    def test_schema_with_optional_string_in_related_schema(self, spec):
+        @dataclasses.dataclass
+        class MyChildSchema:
+            id: int
+            name: typing.Optional[str]
+
+        @dataclasses.dataclass
+        class MyParentSchema:
+            id: int
+            child: MyChildSchema
+
+        spec.components.schema("MyParentSchema", schema=MyParentSchema)
+        definitions = get_definitions(spec)
+        props = definitions["MyChildSchema"]["properties"]
+
+        assert "required" in definitions["MyChildSchema"]
+        assert ['id'] == definitions["MyChildSchema"]["required"]
+        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}} == props
