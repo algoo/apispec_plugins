@@ -218,6 +218,8 @@ class SerpycoPlugin(BasePlugin):
                 # FIXME BS 2019-01-31: We must take a look into _schemas attribute to prevent
                 # apispec.exceptions.DuplicateComponentNameError raise. See #14.
                 if name not in self.spec.components._schemas:
+                    # To be OpenAPI compliant, we must manage ourself required properties
+                    manage_required_properties(definition)
                     self.spec.components.schema(name, with_definition=definition)
 
         # Clean json_schema (to be OpenAPI compatible)
