@@ -136,6 +136,8 @@ def manage_required_properties(schema):
             real_property = extract_type_for_type_or_null_property(property_)
             # In OpenAPI, required properties are added in "required" key (see bellow)
             schema["properties"][property_name] = real_property
+            if schema["required"]:
+                schema["required"].remove(property_name)
         else:
             schema.setdefault("required", []).append(property_name)
             schema["required"] = list(sorted(set(schema["required"])))
