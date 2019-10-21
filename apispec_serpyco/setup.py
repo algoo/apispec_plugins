@@ -18,7 +18,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["apispec>=1.1.0", "serpyco>=0.16.1"],
+    install_requires=["apispec>=1.1.0", "serpyco>=0.16.1", "typing-inspect"],
     extras_require={"test": ["pytest"]},
     data_files = [("", ["LICENSE"])],
 )
