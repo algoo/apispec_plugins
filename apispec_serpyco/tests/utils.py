@@ -3,20 +3,20 @@
 
 def get_definitions(spec):
     if spec.openapi_version.major < 3:
-        return spec.to_dict()["definitions"]
-    return spec.to_dict()["components"]["schemas"]
+        return spec.to_dict().get("definitions", {})
+    return spec.to_dict().get("components", {}).get("schemas", {})
 
 
 def get_parameters(spec):
     if spec.openapi_version.major < 3:
-        return spec.to_dict()["parameters"]
-    return spec.to_dict()["components"]["parameters"]
+        return spec.to_dict().get("parameters", {})
+    return spec.to_dict().get("components", {}).get("parameters", {})
 
 
 def get_responses(spec):
     if spec.openapi_version.major < 3:
-        return spec.to_dict()["responses"]
-    return spec.to_dict()["components"]["responses"]
+        return spec.to_dict().get("responses", {})
+    return spec.to_dict().get("components", {}).get("responses", {})
 
 
 def get_paths(spec):
