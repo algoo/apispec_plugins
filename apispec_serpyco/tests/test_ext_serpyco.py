@@ -240,7 +240,7 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "responses": {
-                        200: {
+                        "200": {
                             "schema": pet_schema,
                             "description": "successful operation",
                         }
@@ -249,10 +249,10 @@ class TestOperationHelper:
             },
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
-        assert get["responses"][200][
+        assert get["responses"]["200"][
             "schema"
         ] == spec_fixture.openapi.schema2jsonschema(PetSchema)
-        assert get["responses"][200]["description"] == "successful operation"
+        assert get["responses"]["200"]["description"] == "successful operation"
 
     @pytest.mark.parametrize("pet_schema", (PetSchema,))
     @pytest.mark.parametrize("spec_fixture", ("3.0.0",), indirect=True)
@@ -262,7 +262,7 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "responses": {
-                        200: {
+                        "200": {
                             "content": {"application/json": {"schema": pet_schema}},
                             "description": "successful operation",
                         }
@@ -271,9 +271,9 @@ class TestOperationHelper:
             },
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
-        resolved_schema = get["responses"][200]["content"]["application/json"]["schema"]
+        resolved_schema = get["responses"]["200"]["content"]["application/json"]["schema"]
         assert resolved_schema == spec_fixture.openapi.schema2jsonschema(PetSchema)
-        assert get["responses"][200]["description"] == "successful operation"
+        assert get["responses"]["200"]["description"] == "successful operation"
 
     @pytest.mark.parametrize("spec_fixture", ("2.0",), indirect=True)
     def test_schema_expand_parameters_v2(self, spec_fixture):
@@ -341,11 +341,11 @@ class TestOperationHelper:
     def test_schema_uses_ref_if_available_v2(self, spec_fixture):
         spec_fixture.spec.components.schema("Pet", schema=PetSchema)
         spec_fixture.spec.path(
-            path="/pet", operations={"get": {"responses": {200: {"schema": PetSchema}}}}
+            path="/pet", operations={"get": {"responses": {"200": {"schema": PetSchema}}}}
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
         assert (
-            get["responses"][200]["schema"]["$ref"]
+            get["responses"]["200"]["schema"]["$ref"]
             == self.ref_path(spec_fixture.spec) + "Pet"
         )
 
@@ -357,14 +357,14 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "responses": {
-                        200: {"content": {"application/json": {"schema": PetSchema}}}
+                        "200": {"content": {"application/json": {"schema": PetSchema}}}
                     }
                 }
             },
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
         assert (
-            get["responses"][200]["content"]["application/json"]["schema"]["$ref"]
+            get["responses"]["200"]["content"]["application/json"]["schema"]["$ref"]
             == self.ref_path(spec_fixture.spec) + "Pet"
         )
 
@@ -422,7 +422,7 @@ class TestOperationHelper:
                         {"in": "body", "schema": {"type": "array", "items": PetSchema}}
                     ],
                     "responses": {
-                        200: {"schema": {"type": "array", "items": PetSchema}}
+                        "200": {"schema": {"type": "array", "items": PetSchema}}
                     },
                 }
             },
@@ -434,7 +434,7 @@ class TestOperationHelper:
             "items": {"$ref": self.ref_path(spec_fixture.spec) + "Pet"},
         }
         assert get["parameters"][0]["schema"] == resolved_schema
-        assert get["responses"][200]["schema"] == resolved_schema
+        assert get["responses"]["200"]["schema"] == resolved_schema
 
     @pytest.mark.parametrize("spec_fixture", ("3.0.0",), indirect=True)
     def test_schema_array_uses_ref_if_available_v3(self, spec_fixture):
@@ -454,7 +454,7 @@ class TestOperationHelper:
                         }
                     ],
                     "responses": {
-                        200: {
+                        "200": {
                             "content": {
                                 "application/json": {
                                     "schema": {"type": "array", "items": PetSchema}
@@ -474,7 +474,7 @@ class TestOperationHelper:
         }
         request_schema = op["parameters"][0]["content"]["application/json"]["schema"]
         assert request_schema == resolved_schema
-        response_schema = op["responses"][200]["content"]["application/json"]["schema"]
+        response_schema = op["responses"]["200"]["content"]["application/json"]["schema"]
         assert response_schema == resolved_schema
 
     @pytest.mark.parametrize("spec_fixture", ("2.0",), indirect=True)
@@ -485,7 +485,7 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "responses": {
-                        200: {
+                        "200": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -499,7 +499,7 @@ class TestOperationHelper:
             },
         )
         get = get_paths(spec_fixture.spec)["/parents"]["get"]
-        assert get["responses"][200]["schema"] == {
+        assert get["responses"]["200"]["schema"] == {
             "type": "object",
             "properties": {
                 "mother": {"$ref": self.ref_path(spec_fixture.spec) + "Pet"},
@@ -515,7 +515,7 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "responses": {
-                        200: {
+                        "200": {
                             "content": {
                                 "application/json": {
                                     "schema": {
@@ -533,7 +533,7 @@ class TestOperationHelper:
             },
         )
         get = get_paths(spec_fixture.spec)["/parents"]["get"]
-        assert get["responses"][200]["content"]["application/json"]["schema"] == {
+        assert get["responses"]["200"]["content"]["application/json"]["schema"] == {
             "type": "object",
             "properties": {
                 "mother": {"$ref": self.ref_path(spec_fixture.spec) + "Pet"},
