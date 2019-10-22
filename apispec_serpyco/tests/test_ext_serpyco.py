@@ -419,7 +419,11 @@ class TestOperationHelper:
             operations={
                 "get": {
                     "parameters": [
-                        {"in": "body", "schema": {"type": "array", "items": PetSchema}}
+                        {
+                            "in": "body",
+                            "name": "body",
+                            "schema": {"type": "array", "items": PetSchema},
+                        }
                     ],
                     "responses": {
                         "200": {"schema": {"type": "array", "items": PetSchema}}
@@ -446,6 +450,7 @@ class TestOperationHelper:
                     "parameters": [
                         {
                             "in": "body",
+                            "name":" body",
                             "content": {
                                 "application/json": {
                                     "schema": {"type": "array", "items": PetSchema}
