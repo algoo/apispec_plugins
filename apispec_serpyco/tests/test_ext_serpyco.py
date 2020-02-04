@@ -271,7 +271,9 @@ class TestOperationHelper:
             },
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
-        resolved_schema = get["responses"]["200"]["content"]["application/json"]["schema"]
+        resolved_schema = get["responses"]["200"]["content"]["application/json"][
+            "schema"
+        ]
         assert resolved_schema == spec_fixture.openapi.schema2jsonschema(PetSchema)
         assert get["responses"]["200"]["description"] == "successful operation"
 
@@ -341,7 +343,8 @@ class TestOperationHelper:
     def test_schema_uses_ref_if_available_v2(self, spec_fixture):
         spec_fixture.spec.components.schema("Pet", schema=PetSchema)
         spec_fixture.spec.path(
-            path="/pet", operations={"get": {"responses": {"200": {"schema": PetSchema}}}}
+            path="/pet",
+            operations={"get": {"responses": {"200": {"schema": PetSchema}}}},
         )
         get = get_paths(spec_fixture.spec)["/pet"]["get"]
         assert (
@@ -450,7 +453,7 @@ class TestOperationHelper:
                     "parameters": [
                         {
                             "in": "body",
-                            "name":" body",
+                            "name": " body",
                             "content": {
                                 "application/json": {
                                     "schema": {"type": "array", "items": PetSchema}
@@ -479,7 +482,9 @@ class TestOperationHelper:
         }
         request_schema = op["parameters"][0]["content"]["application/json"]["schema"]
         assert request_schema == resolved_schema
-        response_schema = op["responses"]["200"]["content"]["application/json"]["schema"]
+        response_schema = op["responses"]["200"]["content"]["application/json"][
+            "schema"
+        ]
         assert response_schema == resolved_schema
 
     @pytest.mark.parametrize("spec_fixture", ("2.0",), indirect=True)
@@ -591,21 +596,21 @@ class TestSchemaWithOptional:
         @dataclasses.dataclass
         class MySchema:
             id: int
-            name: typing.Optional[str]
+            name: typing.Optional[str] = None
 
         spec.components.schema("MySchema", schema=MySchema)
         definitions = get_definitions(spec)
         props = definitions["MySchema"]["properties"]
 
         assert "required" in definitions["MySchema"]
-        assert ['id'] == definitions["MySchema"]["required"]
-        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}} == props
+        assert ["id"] == definitions["MySchema"]["required"]
+        assert {"id": {"type": "integer"}, "name": {"type": "string"}} == props
 
     def test_schema_with_optional_string_in_related_schema(self, spec):
         @dataclasses.dataclass
         class MyChildSchema:
             id: int
-            name: typing.Optional[str]
+            name: typing.Optional[str] = None
 
         @dataclasses.dataclass
         class MyParentSchema:
@@ -614,8 +619,9 @@ class TestSchemaWithOptional:
 
         spec.components.schema("MyParentSchema", schema=MyParentSchema)
         definitions = get_definitions(spec)
-        props = definitions['tests.test_ext_serpyco.MyChildSchema']["properties"]
-        definition = definitions['tests.test_ext_serpyco.MyChildSchema']
+        props = definitions["tests.test_ext_serpyco.MyChildSchema"]["properties"]
+        definition = definitions["tests.test_ext_serpyco.MyChildSchema"]
         assert "required" in definition
-        assert ['id'] == definition["required"]
-        assert {'id': {'type': 'integer'}, 'name': {'type': 'string'}} == props
+        assert ["id"] == definition["required"]
+        assert {"id": {"type": "integer"}, "name": {"type": "string"}} == props
+
