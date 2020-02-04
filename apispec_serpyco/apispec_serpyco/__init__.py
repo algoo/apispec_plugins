@@ -104,7 +104,7 @@ def extract_type_for_type_or_null_property(property_):
     raise TypeError("Can't extract type because this is not a type_or_null_property")
 
 
-def manage_required_properties(schema):
+def manage_optional_properties(schema):
     """
     Serpyco use "anyOf" (null, or defined type) key to define optional properties.
     Example:
@@ -134,13 +134,8 @@ def manage_required_properties(schema):
     for property_name, property_ in dict(schema.get("properties", {}).items()).items():
         if is_type_or_null_property(property_):
             real_property = extract_type_for_type_or_null_property(property_)
-            # In OpenAPI, required properties are added in "required" key (see bellow)
+            # In OpenAPI, required properties are added in "required" key (see below)
             schema["properties"][property_name] = real_property
-            if schema["required"]:
-                schema["required"].remove(property_name)
-        else:
-            schema.setdefault("required", []).append(property_name)
-            schema["required"] = list(sorted(set(schema["required"])))
 
 
 def replace_auto_refs(schema_name, data, openapi_version):
@@ -204,10 +199,8 @@ class SerpycoPlugin(BasePlugin):
 
         if self.openapi_version.major > 2:
             replace_refs_for_openapi3(json_schema["properties"])
-
         # To be OpenAPI compliant, we must manage ourself required properties
-        manage_required_properties(json_schema)
-
+        manage_optional_properties(json_schema)
         # Replace auto reference to absolute reference
         replace_auto_refs(name, json_schema["properties"], self.openapi_version)
 
@@ -221,7 +214,7 @@ class SerpycoPlugin(BasePlugin):
                 # apispec.exceptions.DuplicateComponentNameError raise. See #14.
                 if name not in self.spec.components._schemas:
                     # To be OpenAPI compliant, we must manage ourself required properties
-                    manage_required_properties(definition)
+                    manage_optional_properties(definition)
                     self.spec.components.schema(name, with_definition=definition)
 
         # Clean json_schema (to be OpenAPI compatible)
