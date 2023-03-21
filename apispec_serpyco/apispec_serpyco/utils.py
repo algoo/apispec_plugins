@@ -22,9 +22,10 @@ def schema_name_resolver(
 ) -> str:
     if typing_inspect.is_generic_type(dataclass_):
         dataclass_name = extract_name_of_dataclass(dataclass_)
-        dataclass_name += "_" + "_".join([
-            arg.__name__ for arg in typing_inspect.get_args(dataclass_)
-        ])
+        dataclass_name += "_" + "_".join(
+            [arg.__name__ for arg in typing_inspect.get_args(dataclass_)]
+            + ([a.__name__ for a in arguments] if arguments is not None else [])
+        )
     else:
         dataclass_name = extract_name_of_dataclass(dataclass_)
 

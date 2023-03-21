@@ -43,3 +43,17 @@ def test_schema_name_resolver__generic_type():
         items: typing.List[T]
 
     assert "Bar_Foo" == schema_name_resolver(Bar[Foo])
+
+
+def test_schema_name_resolver__args_generic_type():
+    @dataclasses.dataclass
+    class Foo:
+        bar: str
+
+    T = typing.TypeVar("T")
+
+    @dataclasses.dataclass
+    class Bar(typing.Generic[T]):
+        items: typing.List[T]
+
+    assert "Bar_Foo_int" == schema_name_resolver(Bar[Foo], [int])
